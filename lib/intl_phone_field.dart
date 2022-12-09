@@ -24,6 +24,8 @@ class IntlPhoneField extends StatefulWidget {
   final bool readOnly;
   final FormFieldSetter<PhoneNumber>? onSaved;
 
+  final bool useAbbreviatedCountryCodes;
+
   /// {@macro flutter.widgets.editableText.onChanged}
   ///
   /// See also:
@@ -249,6 +251,7 @@ class IntlPhoneField extends StatefulWidget {
     this.keyboardType = TextInputType.phone,
     this.controller,
     this.focusNode,
+    this.useAbbreviatedCountryCodes = false,
     this.decoration = const InputDecoration(),
     this.style,
     this.dropdownTextStyle,
@@ -336,7 +339,7 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
       if (value is String) {
         validatorMessage = value;
       } else {
-        (value as Future).then((msg) {
+        (value as Future).then((dynamic msg) {
           validatorMessage = msg;
         });
       }
@@ -345,12 +348,13 @@ class _IntlPhoneFieldState extends State<IntlPhoneField> {
 
   Future<void> _changeCountry() async {
     filteredCountries = _countryList;
-    await showDialog(
+    await showDialog<CountryPickerDialog>(
       context: context,
       useRootNavigator: false,
       builder: (context) => StatefulBuilder(
         builder: (ctx, setState) => CountryPickerDialog(
           style: widget.pickerDialogStyle,
+          useAbbreviatedCountryCodes: widget.useAbbreviatedCountryCodes,
           filteredCountries: filteredCountries,
           searchText: widget.searchText,
           countryList: _countryList,
